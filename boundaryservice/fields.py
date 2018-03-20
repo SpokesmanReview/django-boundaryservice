@@ -10,11 +10,15 @@ class ListField(models.TextField):
     """
     Store a list of values in a Model field.
     """
-    __metaclass__ = models.SubfieldBase
- 
+
     def __init__(self, *args, **kwargs):
         self.separator = kwargs.pop('separator', ',')
         super(ListField, self).__init__(*args, **kwargs)
+    
+    def from_db_value(self, value, expression, connection, context):
+        if value is None:
+            return value
+        return value.split(self.separator)
  
     def to_python(self, value):
         if not value: return
@@ -41,8 +45,11 @@ class JSONField(models.TextField):
     """
     Store arbitrary JSON in a Model field.
     """
-    # Used so to_python() is called
-    __metaclass__ = models.SubfieldBase
+
+    def from_db_value(self, value, expression, connection, context):
+        if value is None:
+            return value
+        return json.loads(value)
 
     def to_python(self, value):
         """
