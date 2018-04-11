@@ -49,7 +49,12 @@ class JSONField(models.TextField):
     def from_db_value(self, value, expression, connection, context):
         if value is None:
             return value
-        return json.loads(value)
+        try:
+            if isinstance(value,basestring):
+                return json.loads(value)
+        except ValueError:
+            pass
+        return value
 
     def to_python(self, value):
         """
