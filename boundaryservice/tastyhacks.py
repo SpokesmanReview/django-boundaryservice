@@ -68,7 +68,7 @@ class SluggedResource(ModelResource):
     """
     ModelResource subclass that handles looking up models by slugs rather than IDs.
     """
-    def override_urls(self):
+    def prepend_urls(self):
         """
         Add slug-based url pattern.
         """
